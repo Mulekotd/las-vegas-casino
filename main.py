@@ -1,4 +1,4 @@
-from src.Program import Program
+from src.structures.Program import Program
 
 print("============================")
 print("===== LAS VEGAS CASINO =====")

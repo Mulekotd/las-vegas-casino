@@ -1,4 +1,4 @@
-from .utils import calculate_execution_time
+from src.utils import calculate_execution_time
 
 class File:
     def __init__(self, path: str):
@@ -13,8 +13,7 @@ class File:
         if not lines:
             return []
 
-        _, *rows = lines
-        return [row.strip() for row in rows if row.strip()]
+        return [line.strip() for line in lines if line.strip()]
     
     def write(self, content: str) -> None:
         with open(self.path, "w", encoding="utf-8") as f:

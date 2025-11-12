@@ -16,3 +16,6 @@ class Movimentation:
         print("RECIPIENT:", self.recipient)
         print("AMOUNT:", self.amount)
         print("TAGS:", self.tags, end="\n\n")
+
+    def get_id(self):
+        return self.transaction_id
