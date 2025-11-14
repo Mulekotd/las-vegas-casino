@@ -19,13 +19,13 @@ class Client:
         self.vip_level = int(vip_level) if vip_level is not None else self.vip_level
         self.payment_methods = json.loads(payment_methods) if payment_methods is not None else self.payment_methods
 
-    def show_details(self):
-        print("ID:", self.id)
-        print("NAME:", self.first_name, self.last_name)
-        print("COUNTRY:", self.country)
-        print("BALANCE:", self.balance)
-        print("VIP LEVEL:", self.vip_level)
-        print("PAYMENT METHODS:", self.payment_methods, end="\n\n")
+    def write_content(self):
+        return (f"ID: {self.id}\n"
+                f"NAME: {self.first_name} {self.last_name}\n"
+                f"COUNTRY: {self.country}\n"
+                f"BALANCE: {self.balance}\n"
+                f"VIP LEVEL: {self.vip_level}\n"
+                f"PAYMENT METHODS: {self.payment_methods}\n")
 
     def get_id(self):
         return self.id

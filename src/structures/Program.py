@@ -40,7 +40,13 @@ class Program:
         self.selected_type = None
         self.selected_action = None
 
-        self.output_file = "output.txt"
+        # output paths
+        self.output_paths = {
+            "bets": "outputs/bets.txt",
+            "clients": "outputs/clients.txt",
+            "games": "outputs/games.txt",
+            "movimentations": "outputs/movimentations.txt",
+        }
 
         # metadata
         self.entity_configs = {
@@ -48,21 +54,25 @@ class Program:
                 "file": "database/bets.txt",
                 "cls": Bet,
                 "parser": lambda b: Bet(*b),
+                "title": "BETS",
             },
             "clients": {
                 "file": "database/clients.txt",
                 "cls": Client,
                 "parser": lambda c: Client(*c),
+                "title": "CLIENTS",
             },
             "games": {
                 "file": "database/games.txt",
                 "cls": Game,
                 "parser": lambda g: Game(*g),
+                "title": "GAMES",
             },
             "movimentations": {
                 "file": "database/movimentations.txt",
                 "cls": Movimentation,
                 "parser": lambda m: Movimentation(*m),
+                "title": "MOVIMENTATIONS",
             }
         }
 
@@ -80,6 +90,17 @@ class Program:
             entities.append(parser(parts))
 
         return entities
+
+    def close(self):
+        for entity_name, output_path in self.output_paths.items():
+            entity_list = getattr(self, entity_name)
+            title = self.entity_configs[entity_name]["title"]
+            
+            output_file = File(output_path)
+            output_file.write(f"--- {title} CONTENT ---\n\n")
+            
+            for e in entity_list:
+                output_file.append(e.write_content())
 
     # ========== UI UTILITIES ==========
     def display_menu(self, items: list[str]):
@@ -107,7 +128,6 @@ class Program:
 
     # ========== MENU ACTIONS ==========
     def actions(self, choose: int):
-        # opção de sair
         if choose == len(options):
             print("Programa finalizado com sucesso.")
             self.is_running = False
@@ -116,7 +136,6 @@ class Program:
         if choose <= 0:
             return
 
-        # define entidade selecionada
         self.selected_type = options[choose - 1]
         print(f"\n--- {self.selected_type} ---\n")
 
@@ -127,7 +146,6 @@ class Program:
             self.display_menu(sub_options)
             sub = self.choose_option(len(sub_options))
 
-            # subir ao menu anterior
             if sub == len(sub_options):
                 print("\nRetornando ao menu principal...\n")
                 return
@@ -169,43 +187,40 @@ class Program:
 
         start = time.time()
 
-        for entity in enumerate(entity_list, 1):
-            entity.show_details()
+        for _,e in enumerate(entity_list, 1):
+            print(e.write_content())
 
         print(f"\nLeitura feita em: {(time.time() - start) * 1000:.2f} ms\n")
 
     # ------- VISUALIZE -------
     def handle_visualize(self, entity_list: list):
         pk = int(input("Digite a chave primária: ").strip())
-        start = time.time()
 
+        start = time.time()
         found = next((e for e in entity_list if e.get_id() == pk), None)
         print()
 
         if not found:
             print("Nenhum registro encontrado.\n")
         else:
-            found.show_details()
-
-        print(f"Tempo de visualização: {(time.time() - start) * 1000:.2f} ms\n")
+            print(found.write_content())
+        
+        print(f"\nVisualização feita em: {(time.time() - start) * 1000:.2f} ms\n")
 
     # ------- CREATE -------
     def handle_create(self, entity_list: list):
         user_input = input("Digite os campos separados por espaço: ").split()
-        start = time.time()
 
+        start = time.time()
         entity_name = ENTITY_MAP[self.selected_type]
         cls = self.entity_configs[entity_name]["cls"]
 
         entity_list.append(cls(*user_input))
-
-        print(f"\nTempo de criação: {(time.time() - start) * 1000:.2f} ms\n")
+        print(f"\nCriação feita em: {(time.time() - start) * 1000:.2f} ms\n")
 
     # ------- UPDATE -------
     def handle_update(self, entity_list: list):
         pk = int(input("Digite a chave primária: ").strip())
-        start = time.time()
-
         found = next((e for e in entity_list if e.get_id() == pk), None)
 
         if not found:
@@ -214,20 +229,19 @@ class Program:
             user_input = input("Novos valores separados por espaço: ").split()
             start = time.time()
             found.update(*user_input)
-
-        print(f"\nTempo de edição: {(time.time() - start) * 1000:.2f} ms\n")
+            print(f"\nEdição feita em: {(time.time() - start) * 1000:.2f} ms\n")
 
     # ------- DELETE -------
     def handle_delete(self, entity_list: list):
         pk = int(input("Digite a chave primária: ").strip())
+        
         start = time.time()
-
         found = next((e for e in entity_list if e.get_id() == pk), None)
 
         if not found:
             print("Nenhum registro encontrado.\n")
         else:
             entity_list.remove(found)
-            print("\nRegistro excluído com sucesso!\n")
-
-        print(f"Tempo de exclusão: {(time.time() - start) * 1000:.2f} ms\n")
+            print("\nRegistro excluído com sucesso!\n")        
+        
+        print(f"\Exclusão feita em: {(time.time() - start) * 1000:.2f} ms\n")

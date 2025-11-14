@@ -20,15 +20,15 @@ class Game:
         self.category = category if category is not None else self.category
         self.active = bool(active) if active is not None else self.active
         self.rules = json.loads(rules) if rules is not None else self.rules
-        
-    def show_details(self):
-        print("GAME ID:", self.id)
-        print("NAME:", self.name)
-        print("HOUSE EDGE:", self.house_edge)
-        print("BET RANGE:", self.min_bet, "-", self.max_bet)
-        print("CATEGORY:", self.category)
-        print("ACTIVE:", self.active)
-        print("RULES:", self.rules, end="\n\n")
+    
+    def write_content(self):
+        return (f"GAME ID: {self.id}\n"
+                f"NAME: {self.name}\n"
+                f"HOUSE EDGE: {self.house_edge}\n"
+                f"BET RANGE: {self.min_bet} - {self.max_bet}\n"
+                f"CATEGORY: {self.category}\n"
+                f"ACTIVE: {self.active}\n"
+                f"RULES: {self.rules}\n")
 
     def get_id(self):
         return self.id
