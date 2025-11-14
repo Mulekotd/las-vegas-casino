@@ -7,10 +7,9 @@ from .Client import Client
 from .Game import Game
 from .Movimentation import Movimentation
 
-
 # === CONSTANTS ===
 ENTITY_MAP = {
-    "Bets": "bets",
+    "Apostas": "bets",
     "Clientes": "clients",
     "Jogos": "games",
     "Movimentações": "movimentations",
@@ -43,51 +42,46 @@ class Program:
 
         self.output_file = "output.txt"
 
-        # metadatas
+        # metadata
         self.entity_configs = {
             "bets": {
                 "file": "database/bets.txt",
                 "cls": Bet,
-                "parser": lambda b: Bet(*b)
+                "parser": lambda b: Bet(*b),
             },
             "clients": {
                 "file": "database/clients.txt",
                 "cls": Client,
-                "parser": lambda c: Client(*c)
+                "parser": lambda c: Client(*c),
             },
             "games": {
                 "file": "database/games.txt",
                 "cls": Game,
-                "parser": lambda g: Game(*g)
+                "parser": lambda g: Game(*g),
             },
             "movimentations": {
                 "file": "database/movimentations.txt",
                 "cls": Movimentation,
-                "parser": lambda m: Movimentation(*m)
+                "parser": lambda m: Movimentation(*m),
             }
         }
 
+    # ========== INITIALIZATION ==========
     def init(self):
         for key, config in self.entity_configs.items():
             setattr(self, key, self.load_entities(config["file"], config["parser"]))
 
     def load_entities(self, filepath: str, parser):
         file = File(filepath)
-        data = file.extract_data()
         entities = []
 
-        for line in data:
+        for line in file.extract_data():
             parts = line.split(";")
             entities.append(parser(parts))
-        
+
         return entities
 
-    def loop(self):
-        while self.is_running:
-            self.display_menu(options)
-            choose = self.choose_option(len(options))
-            self.actions(choose)
-
+    # ========== UI UTILITIES ==========
     def display_menu(self, items: list[str]):
         for i, item in enumerate(items, 1):
             breakline = get_breakline("TWO_LINES") if i == len(items) else get_breakline("NEW_LINE")
@@ -104,10 +98,17 @@ class Program:
         print("Opção inválida.\n")
         return -1
 
-    def actions(self, choose: int):
-        n = len(options)
+    # ========== MAIN LOOP ==========
+    def loop(self):
+        while self.is_running:
+            self.display_menu(options)
+            choose = self.choose_option(len(options))
+            self.actions(choose)
 
-        if choose == n:
+    # ========== MENU ACTIONS ==========
+    def actions(self, choose: int):
+        # opção de sair
+        if choose == len(options):
             print("Programa finalizado com sucesso.")
             self.is_running = False
             return
@@ -115,102 +116,123 @@ class Program:
         if choose <= 0:
             return
 
+        # define entidade selecionada
         self.selected_type = options[choose - 1]
         print(f"\n--- {self.selected_type} ---\n")
+
         self.submenu_loop()
 
     def submenu_loop(self):
-        m = len(sub_options)
-
         while True:
             self.display_menu(sub_options)
-            sub = self.choose_option(m)
+            sub = self.choose_option(len(sub_options))
 
-            if sub == m:
+            # subir ao menu anterior
+            if sub == len(sub_options):
                 print("\nRetornando ao menu principal...\n")
-                break
+                return
 
             if sub not in ACTIONS_MAP:
-                print("Opção inválida de ação.\n")
+                print("Opção inválida.\n")
                 continue
 
             self.selected_action = ACTIONS_MAP[sub]
             self.perform_action()
 
+    # ========== ACTION HANDLER ==========
     def perform_action(self):
         entity_name = ENTITY_MAP[self.selected_type]
         entity_list = getattr(self, entity_name)
 
-        match self.selected_action:
-            case "read":
-                start = time.time()
+        handler_map = {
+            "read": self.handle_read,
+            "visualize": self.handle_visualize,
+            "create": self.handle_create,
+            "update": self.handle_update,
+            "delete": self.handle_delete,
+        }
 
-                if not entity_list:
-                    print("Nenhum registro encontrado.\n")
-                    return
+        handler = handler_map.get(self.selected_action)
 
-                print("\nPressione ENTER para avançar, ou 'q' para sair.\n")
+        if handler:
+            handler(entity_list)
+        else:
+            print("Ação não implementada.\n")
 
-                for i, entity in enumerate(entity_list, 1):
-                    entity.show_details()
-                    print(f"[{i}/{len(entity_list)}]")
-                    
-                    user_input = input().lower().strip()
-                    if user_input == "q":
-                        break
-                
-                end = (time.time() - start) * 1000
-                print(f"\nLeitura feita em: {end:.2f} ms\n")
+    # ========== CRUD IMPLEMENTATIONS ==========
 
-            case "visualize":
-                pk = int(input("Digite a chave primária: ").strip())
+    # ------- READ -------
+    def handle_read(self, entity_list: list):
+        if not entity_list:
+            print("Nenhum registro encontrado.\n")
+            return
 
-                start = time.time()
-                found = next((entity for entity in entity_list if entity.get_id() == pk), None)
-                print()
-                
-                if found: found.show_details()
-                else: print("Nenhum registro encontrado.\n")
+        # print("\nPressione ENTER para avançar, ou 'q' para sair.\n")
+        start = time.time()
 
-                end = (time.time() - start) * 1000
-                print(f"\nTempo de visualização: {end:.2f} ms\n")
+        for i, entity in enumerate(entity_list, 1):
+            entity.show_details()
+            # print(f"[{i}/{len(entity_list)}]")
 
-            case "create":
-                user_input = input().split()
-                start = time.time()
+            # if input().lower().strip() == "q":
+            #     break
 
-                new_data = lambda d: self.entity_configs[entity_name]["cls"](*d)
-                entity_list.append(new_data(user_input))
+        print(f"\nLeitura feita em: {(time.time() - start) * 1000:.2f} ms\n")
 
-                end = (time.time() - start) * 1000
-                print(f"\nTempo de criação: {end:.2f} ms\n")
-            
-            case "update":
-                pk = int(input("Digite a chave primária: ").strip())
+    # ------- VISUALIZE -------
+    def handle_visualize(self, entity_list: list):
+        pk = int(input("Digite a chave primária: ").strip())
+        start = time.time()
 
-                start = time.time()
-                found = next((entity for entity in entity_list if entity.get_id() == pk), None)
-                
-                if found: 
-                    user_input = input().split()
-                    found.update(*user_input)
-                else: print("Nenhum registro encontrado.\n")
+        found = next((e for e in entity_list if e.get_id() == pk), None)
+        print()
 
-                end = (time.time() - start) * 1000
-                print(f"\nTempo de visualização: {end:.2f} ms\n")
-            
-            case "delete":
-                pk = int(input("Digite a chave primária: ").strip())
+        if not found:
+            print("Nenhum registro encontrado.\n")
+        else:
+            found.show_details()
 
-                start = time.time()
-                found = next((entity for entity in entity_list if entity.get_id() == pk), None)
-                
-                if found: 
-                    idx = entity_list.index(found)
-                    entity_list.pop(idx)
-                    
-                    print("\nRegistro excluído com sucesso!\n")
-                else: print("Nenhum registro encontrado.\n")
+        print(f"Tempo de visualização: {(time.time() - start) * 1000:.2f} ms\n")
 
-                end = (time.time() - start) * 1000
-                print(f"\nTempo de visualização: {end:.2f} ms\n")
+    # ------- CREATE -------
+    def handle_create(self, entity_list: list):
+        user_input = input("Digite os campos separados por espaço: ").split()
+        start = time.time()
+
+        entity_name = ENTITY_MAP[self.selected_type]
+        cls = self.entity_configs[entity_name]["cls"]
+
+        entity_list.append(cls(*user_input))
+
+        print(f"\nTempo de criação: {(time.time() - start) * 1000:.2f} ms\n")
+
+    # ------- UPDATE -------
+    def handle_update(self, entity_list: list):
+        pk = int(input("Digite a chave primária: ").strip())
+        start = time.time()
+
+        found = next((e for e in entity_list if e.get_id() == pk), None)
+
+        if not found:
+            print("Nenhum registro encontrado.\n")
+        else:
+            user_input = input("Novos valores separados por espaço: ").split()
+            start = time.time()
+            found.update(*user_input)
+
+        print(f"\nTempo de edição: {(time.time() - start) * 1000:.2f} ms\n")
+
+    # ------- DELETE -------
+    def handle_delete(self, entity_list: list):
+        pk = int(input("Digite a chave primária: ").strip())
+        start = time.time()
+
+        found = next((e for e in entity_list if e.get_id() == pk), None)
+
+        if not found:
+            print("Nenhum registro encontrado.\n")
+        else:
+            entity_list.remove(found)
+            print("\nRegistro excluído com sucesso!\n")
+
+        print(f"Tempo de exclusão: {(time.time() - start) * 1000:.2f} ms\n")
