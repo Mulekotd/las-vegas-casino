@@ -1,14 +1,9 @@
-from src.utils import calculate_execution_time
-
 class File:
     def __init__(self, path: str):
         self.path = path
 
     def extract_data(self) -> list[str]:
-        time, lines = calculate_execution_time(self.read)
-
-        print(f"Arquivo: {self.path}")
-        print(f"Tempo de leitura: {time:.2f}ms", end="\n\n")
+        lines = self.read()
 
         if not lines:
             return []

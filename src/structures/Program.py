@@ -1,4 +1,3 @@
-import time
 from src.utils import get_breakline
 
 from .File import File
@@ -167,22 +166,18 @@ class Program:
             print("Nenhum registro encontrado.\n")
             return
 
-        # print("\nPressione ENTER para avançar, ou 'q' para sair.\n")
-        start = time.time()
+        print("\nPressione ENTER para avançar, ou 'q' para sair.\n")
 
         for i, entity in enumerate(entity_list, 1):
             entity.show_details()
-            # print(f"[{i}/{len(entity_list)}]")
+            print(f"[{i}/{len(entity_list)}]")
 
-            # if input().lower().strip() == "q":
-            #     break
-
-        print(f"\nLeitura feita em: {(time.time() - start) * 1000:.2f} ms\n")
+            if input().lower().strip() == "q":
+                break
 
     # ------- VISUALIZE -------
     def handle_visualize(self, entity_list: list):
         pk = int(input("Digite a chave primária: ").strip())
-        start = time.time()
 
         found = next((e for e in entity_list if e.get_id() == pk), None)
         print()
@@ -192,41 +187,29 @@ class Program:
         else:
             found.show_details()
 
-        print(f"Tempo de visualização: {(time.time() - start) * 1000:.2f} ms\n")
-
     # ------- CREATE -------
     def handle_create(self, entity_list: list):
         user_input = input("Digite os campos separados por espaço: ").split()
-        start = time.time()
 
         entity_name = ENTITY_MAP[self.selected_type]
         cls = self.entity_configs[entity_name]["cls"]
 
         entity_list.append(cls(*user_input))
 
-        print(f"\nTempo de criação: {(time.time() - start) * 1000:.2f} ms\n")
-
     # ------- UPDATE -------
     def handle_update(self, entity_list: list):
         pk = int(input("Digite a chave primária: ").strip())
-        start = time.time()
-
         found = next((e for e in entity_list if e.get_id() == pk), None)
 
         if not found:
             print("Nenhum registro encontrado.\n")
         else:
             user_input = input("Novos valores separados por espaço: ").split()
-            start = time.time()
             found.update(*user_input)
-
-        print(f"\nTempo de edição: {(time.time() - start) * 1000:.2f} ms\n")
 
     # ------- DELETE -------
     def handle_delete(self, entity_list: list):
         pk = int(input("Digite a chave primária: ").strip())
-        start = time.time()
-
         found = next((e for e in entity_list if e.get_id() == pk), None)
 
         if not found:
@@ -234,5 +217,3 @@ class Program:
         else:
             entity_list.remove(found)
             print("\nRegistro excluído com sucesso!\n")
-
-        print(f"Tempo de exclusão: {(time.time() - start) * 1000:.2f} ms\n")
