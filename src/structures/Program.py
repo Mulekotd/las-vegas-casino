@@ -167,15 +167,10 @@ class Program:
             print("Nenhum registro encontrado.\n")
             return
 
-        # print("\nPressione ENTER para avançar, ou 'q' para sair.\n")
         start = time.time()
 
-        for i, entity in enumerate(entity_list, 1):
+        for entity in enumerate(entity_list, 1):
             entity.show_details()
-            # print(f"[{i}/{len(entity_list)}]")
-
-            # if input().lower().strip() == "q":
-            #     break
 
         print(f"\nLeitura feita em: {(time.time() - start) * 1000:.2f} ms\n")
 
