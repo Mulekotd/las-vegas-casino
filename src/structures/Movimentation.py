@@ -19,14 +19,14 @@ class Movimentation:
         self.transaction_type = transaction_type if transaction_type is not None else self.transaction_type
         self.tags = json.loads(tags) if tags is not None else self.tags        
 
-    def show_details(self):
-        print("TRANSACTION ID:", self.transaction_id)
-        print("TYPE:", self.transaction_type)
-        print("DATETIME:", self.datetime)
-        print("SENDER:", self.sender)
-        print("RECIPIENT:", self.recipient)
-        print("AMOUNT:", self.amount)
-        print("TAGS:", self.tags, end="\n\n")
+    def write_content(self):
+        return (f"TRANSACTION ID: {self.transaction_id}\n"
+                f"TYPE: {self.transaction_type}\n"
+                f"DATETIME: {self.datetime}\n"
+                f"SENDER: {self.sender}\n"
+                f"RECIPIENT: {self.recipient}\n"
+                f"AMOUNT: {self.amount}\n"
+                f"TAGS: {self.tags}\n")
 
     def get_id(self):
         return self.transaction_id

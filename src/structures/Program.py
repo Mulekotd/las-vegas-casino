@@ -39,7 +39,13 @@ class Program:
         self.selected_type = None
         self.selected_action = None
 
-        self.output_file = "output.txt"
+        # output paths
+        self.output_paths = {
+            "bets": "outputs/bets.txt",
+            "clients": "outputs/clients.txt",
+            "games": "outputs/games.txt",
+            "movimentations": "outputs/movimentations.txt",
+        }
 
         # metadata
         self.entity_configs = {
@@ -47,21 +53,25 @@ class Program:
                 "file": "database/bets.txt",
                 "cls": Bet,
                 "parser": lambda b: Bet(*b),
+                "title": "BETS",
             },
             "clients": {
                 "file": "database/clients.txt",
                 "cls": Client,
                 "parser": lambda c: Client(*c),
+                "title": "CLIENTS",
             },
             "games": {
                 "file": "database/games.txt",
                 "cls": Game,
                 "parser": lambda g: Game(*g),
+                "title": "GAMES",
             },
             "movimentations": {
                 "file": "database/movimentations.txt",
                 "cls": Movimentation,
                 "parser": lambda m: Movimentation(*m),
+                "title": "MOVIMENTATIONS",
             }
         }
 
@@ -79,6 +89,17 @@ class Program:
             entities.append(parser(parts))
 
         return entities
+
+    def close(self):
+        for entity_name, output_path in self.output_paths.items():
+            entity_list = getattr(self, entity_name)
+            title = self.entity_configs[entity_name]["title"]
+            
+            output_file = File(output_path)
+            output_file.write(f"--- {title} CONTENT ---\n\n")
+            
+            for e in entity_list:
+                output_file.append(e.write_content())
 
     # ========== UI UTILITIES ==========
     def display_menu(self, items: list[str]):
@@ -106,7 +127,6 @@ class Program:
 
     # ========== MENU ACTIONS ==========
     def actions(self, choose: int):
-        # opção de sair
         if choose == len(options):
             print("Programa finalizado com sucesso.")
             self.is_running = False
@@ -115,7 +135,6 @@ class Program:
         if choose <= 0:
             return
 
-        # define entidade selecionada
         self.selected_type = options[choose - 1]
         print(f"\n--- {self.selected_type} ---\n")
 
@@ -126,7 +145,6 @@ class Program:
             self.display_menu(sub_options)
             sub = self.choose_option(len(sub_options))
 
-            # subir ao menu anterior
             if sub == len(sub_options):
                 print("\nRetornando ao menu principal...\n")
                 return
@@ -169,7 +187,7 @@ class Program:
         print("\nPressione ENTER para avançar, ou 'q' para sair.\n")
 
         for i, entity in enumerate(entity_list, 1):
-            entity.show_details()
+            print(entity.write_content())
             print(f"[{i}/{len(entity_list)}]")
 
             if input().lower().strip() == "q":
@@ -185,7 +203,7 @@ class Program:
         if not found:
             print("Nenhum registro encontrado.\n")
         else:
-            found.show_details()
+            print(found.write_content())
 
     # ------- CREATE -------
     def handle_create(self, entity_list: list):
@@ -216,4 +234,4 @@ class Program:
             print("Nenhum registro encontrado.\n")
         else:
             entity_list.remove(found)
-            print("\nRegistro excluído com sucesso!\n")
+            print("\nRegistro excluído com sucesso!\n")        

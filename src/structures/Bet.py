@@ -21,14 +21,14 @@ class Bet:
         self.datetime = datetime if datetime is not None else self.datetime
         self.odds_breakdown = json.loads(odds_breakdown) if odds_breakdown is not None else self.odds_breakdown
 
-    def show_details(self):
-        print("BET ID:", self.id)
-        print("CLIENT:", self.client_id)
-        print("GAME:", self.game_id)
-        print("AMOUNT:", self.amount)
-        print("OUTCOME:", self.outcome)
-        print("PAYOUT:", self.payout)
-        print("DATETIME:", self.datetime, end="\n\n")
+    def write_content(self):
+        return (f"BET ID: {self.id}\n"
+                f"CLIENT: {self.client_id}\n"
+                f"GAME: {self.game_id}\n"
+                f"AMOUNT: {self.amount}\n"
+                f"OUTCOME: {self.outcome}\n"
+                f"PAYOUT: {self.payout}\n"
+                f"DATETIME: {self.datetime}\n")
 
     def get_id(self):
         return self.id

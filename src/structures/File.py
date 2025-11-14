@@ -1,3 +1,5 @@
+import os
+
 class File:
     def __init__(self, path: str):
         self.path = path
@@ -11,6 +13,11 @@ class File:
         return [line.strip() for line in lines if line.strip()]
     
     def write(self, content: str) -> None:
+        directory = os.path.dirname(self.path)
+        
+        if directory:
+            os.makedirs(directory, exist_ok=True)
+        
         with open(self.path, "w", encoding="utf-8") as f:
             f.write(content)
 
@@ -18,16 +25,11 @@ class File:
         with open(self.path, encoding="utf-8") as f:
             return f.readlines()
 
-    def append_line(self, new_line: str) -> None:
+    def append(self, new_line: str) -> None:
+        directory = os.path.dirname(self.path)
+
+        if directory:
+            os.makedirs(directory, exist_ok=True)
+        
         with open(self.path, "a", encoding="utf-8") as f:
             f.write(new_line + "\n")
-
-    def delete_line(self, key: str) -> None:
-        with open(self.path, "r", encoding="utf-8") as f:
-            lines = f.readlines()
-
-        with open(self.path, "w", encoding="utf-8") as f:
-            for line in lines:
-                if key in line: 
-                    continue
-                f.write(line)
