@@ -2,13 +2,13 @@ import json
 
 class Bet:
     def __init__(self, id, client_id, game_id, amount, outcome, payout, datetime, odds_breakdown):
-        self.id = int(id)                    # primary key
+        self.id = int(id)
         self.client_id = client_id
         self.game_id = int(game_id)
         self.amount = float(amount)
-        self.outcome = outcome               # win | lose | push
+        self.outcome = outcome
         self.payout = float(payout)
-        self.datetime = datetime             # ISO datetime string
+        self.datetime = datetime
         self.odds_breakdown = json.loads(odds_breakdown)
 
     def update(self, id=None, client_id=None, game_id=None, amount=None, outcome=None, payout=None, datetime=None, odds_breakdown=None):
