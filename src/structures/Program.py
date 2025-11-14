@@ -1,4 +1,4 @@
-import json
+import time
 from src.utils import get_breakline
 
 from .File import File
@@ -41,7 +41,6 @@ class Program:
         self.selected_type = None
         self.selected_action = None
 
-        # saída
         self.output_file = "output.txt"
 
         # metadatas
@@ -49,23 +48,23 @@ class Program:
             "bets": {
                 "file": "database/bets.txt",
                 "cls": Bet,
-                "parser": lambda b: Bet(*b[:-1], json.loads(b[-1]))
+                "parser": lambda b: Bet(*b)
             },
             "clients": {
                 "file": "database/clients.txt",
                 "cls": Client,
-                "parser": lambda c: Client(*c[:-1], json.loads(c[-1]))
+                "parser": lambda c: Client(*c)
             },
             "games": {
                 "file": "database/games.txt",
                 "cls": Game,
-                "parser": lambda g: Game(*g[:-1], json.loads(g[-1]))
+                "parser": lambda g: Game(*g)
             },
             "movimentations": {
                 "file": "database/movimentations.txt",
                 "cls": Movimentation,
-                "parser": lambda m: Movimentation(*m[:-1], json.loads(m[-1]))
-            },
+                "parser": lambda m: Movimentation(*m)
+            }
         }
 
     def init(self):
@@ -97,7 +96,6 @@ class Program:
     def choose_option(self, max_option: int) -> int:
         try:
             choose = int(input("Escolha uma opção pelo número: "))
-
             if 1 <= choose <= max_option:
                 return choose
         except ValueError:
@@ -107,7 +105,9 @@ class Program:
         return -1
 
     def actions(self, choose: int):
-        if choose == len(options):
+        n = len(options)
+
+        if choose == n:
             print("Programa finalizado com sucesso.")
             self.is_running = False
             return
@@ -120,11 +120,13 @@ class Program:
         self.submenu_loop()
 
     def submenu_loop(self):
+        m = len(sub_options)
+
         while True:
             self.display_menu(sub_options)
-            sub = self.choose_option(len(sub_options))
+            sub = self.choose_option(m)
 
-            if sub == len(sub_options):
+            if sub == m:
                 print("\nRetornando ao menu principal...\n")
                 break
 
@@ -141,6 +143,8 @@ class Program:
 
         match self.selected_action:
             case "read":
+                start = time.time()
+
                 if not entity_list:
                     print("Nenhum registro encontrado.\n")
                     return
@@ -154,18 +158,59 @@ class Program:
                     user_input = input().lower().strip()
                     if user_input == "q":
                         break
+                
+                end = (time.time() - start) * 1000
+                print(f"\nLeitura feita em: {end:.2f} ms\n")
 
             case "visualize":
                 pk = int(input("Digite a chave primária: ").strip())
+
+                start = time.time()
                 found = next((entity for entity in entity_list if entity.get_id() == pk), None)
                 print()
                 
                 if found: found.show_details()
-                else: print("Nenhum registro encontrado. \n")
+                else: print("Nenhum registro encontrado.\n")
+
+                end = (time.time() - start) * 1000
+                print(f"\nTempo de visualização: {end:.2f} ms\n")
 
             case "create":
-                print("TODO: criar rotina de inserção dessa entidade")
+                user_input = input().split()
+                start = time.time()
+
+                new_data = lambda d: self.entity_configs[entity_name]["cls"](*d)
+                entity_list.append(new_data(user_input))
+
+                end = (time.time() - start) * 1000
+                print(f"\nTempo de criação: {end:.2f} ms\n")
+            
             case "update":
-                print("TODO: criar rotina de edição dessa entidade")
+                pk = int(input("Digite a chave primária: ").strip())
+
+                start = time.time()
+                found = next((entity for entity in entity_list if entity.get_id() == pk), None)
+                
+                if found: 
+                    user_input = input().split()
+                    found.update(*user_input)
+                else: print("Nenhum registro encontrado.\n")
+
+                end = (time.time() - start) * 1000
+                print(f"\nTempo de visualização: {end:.2f} ms\n")
+            
             case "delete":
-                print("TODO: criar rotina de exclusão dessa entidade")
+                pk = int(input("Digite a chave primária: ").strip())
+
+                start = time.time()
+                found = next((entity for entity in entity_list if entity.get_id() == pk), None)
+                
+                if found: 
+                    idx = entity_list.index(found)
+                    entity_list.pop(idx)
+                    
+                    print("\nRegistro excluído com sucesso!\n")
+                else: print("Nenhum registro encontrado.\n")
+
+                end = (time.time() - start) * 1000
+                print(f"\nTempo de visualização: {end:.2f} ms\n")
