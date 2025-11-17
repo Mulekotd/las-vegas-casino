@@ -244,4 +244,4 @@ class Program:
             entity_list.remove(found)
             print("\nRegistro excluído com sucesso!\n")        
         
-        print(f"\Exclusão feita em: {(time.time() - start) * 1000:.2f} ms\n")
+        print(f"\nExclusão feita em: {(time.time() - start) * 1000:.2f} ms\n")
