@@ -1,63 +1,107 @@
 # Relatório - Las Vegas Casino
 
-## Introdução
+## 1. Introdução
 
-Este relatório apresenta o projeto desenvolvido para a disciplina de Programação 1, que consiste em um sistema de gerenciamento de cassino.
+Este documento apresenta o sistema de gerenciamento de cassino desenvolvido como projeto da disciplina de Programação 1. O sistema implementa funcionalidades completas de CRUD (Create, Read, Update, Delete) para gerenciamento de apostas, clientes, jogos e movimentações financeiras, utilizando arquivos de texto como mecanismo de persistência de dados.
 
-## Estrutura do Projeto
+## 2. Decisões de Projeto
 
-A organização do projeto foi planejada de forma modular para facilitar a manutenção e compreensão do código. A estrutura de diretórios adotada é apresentada a seguir:
+### 2.1 Estrutura de Diretórios
 
-```bash
-.
-├── README.md
-├── database
-│   ├── bets.txt
-│   ├── clients.txt
-│   ├── games.txt
-│   └── movimentations.txt
-├── hydration.py
-├── main.py
-└── src
-    ├── __init__
-    ├── structures
-    │   ├── Bet.py
-    │   ├── Client.py
-    │   ├── File.py
-    │   ├── Game.py
-    │   ├── Movimentation.py
-    │   ├── Program.py
-    │   └── __init__
-    └── utils.py
+A estrutura do projeto foi organizada de forma hierárquica, priorizando a separação clara
+entre código-fonte, dados de entrada e saídas do sistema.
+
+### 2.2 Modelagem das Classes
+
+A modelagem dos agragados foi concebida como uma representação direta da estrutura dos arquivos. Assim, cada classe do sistema corresponde a um arquivo específico, onde suas propriedades mapeiam as colunas do arquivo.
+
+<div style="page-break-after: always;"></div>
+
+#### 2.2.1 Classe Bet (Aposta)
+
+Representa uma aposta realizada por um cliente em um jogo específico, mantendo registro completo da transação incluindo valor apostado, resultado obtido e pagamento efetuado.
+
+```python
+- id: int (chave primária)
+- client_id: str (referência ao cliente)
+- game_id: int (referência ao jogo)
+- amount: float (valor apostado)
+- outcome: str (resultado da aposta)
+- payout: float (valor do pagamento)
+- datetime: str (data e hora)
+- odds_breakdown: list (detalhamento das odds)
 ```
 
-## Descrição dos Componentes
+#### 2.2.2 Classe Client (Cliente)
 
-### Diretório Raiz
+Encapsula as informações cadastrais e financeiras dos clientes do cassino, incluindo dados pessoais, saldo disponível e nível de privilégio no sistema.
 
-No diretório raiz do projeto encontram-se dois scripts Python principais:
+```python
+- id: int (chave primária)
+- first_name: str (primeiro nome)
+- last_name: str (sobrenome)
+- country: str (país de origem)
+- balance: float (saldo disponível)
+- vip_level: int (nível VIP)
+- payment_methods: list (métodos de pagamento)
+```
 
-- **main.py:** arquivo responsável por servir como ponto de entrada do programa principal, inicializando a aplicação e gerenciando o fluxo de execução.
+#### 2.2.3 Classe Game (Jogo)
 
-- **hydration.py:** script desenvolvido para gerar arquivos de texto contendo dados aleatórios.
+Define as características operacionais de cada jogo disponível no cassino, estabelecendo parâmetros como limites de apostas, categoria e regras específicas.
 
-### Diretório database/
+```python
+- id: int (chave primária)
+- name: str (nome do jogo)
+- house_edge: float (vantagem da casa)
+- min_bet: float (aposta mínima)
+- max_bet: float (aposta máxima)
+- category: str (categoria do jogo)
+- active: bool (status de ativação)
+- rules: list (regras do jogo)
+```
 
-O diretório `database/` armazena os arquivos de texto que funcionam como base de dados persistente do sistema, contendo informações sobre apostas, clientes, jogos e movimentações financeiras.
+<div style="page-break-after: always;"></div>
 
-### Diretório src/
+#### 2.2.4 Classe Movimentation (Movimentação)
 
-O diretório `src/` contém os módulos auxiliares necessários para o funcionamento adequado do programa:
+Registra todas as transações financeiras realizadas no sistema, proporcionando rastreabilidade completa das operações monetárias entre diferentes entidades.
 
-- **structures/:** subdiretório que agrupa as classes principais do sistema (Bet, Client, File, Game, Movimentation e Program), representando as entidades e estruturas de dados do projeto.
+```python
+- transaction_id: int (chave primária)
+- sender: str (remetente)
+- recipient: str (destinatário)
+- amount: float (valor da transação)
+- datetime: str (data e hora)
+- transaction_type: str (tipo de transação)
+- tags: list (etiquetas)
+```
 
-- **utils.py:** módulo contendo funções utilitárias utilizadas em diversas partes do sistema.
+### 2.3 Simplicidade do script principal
 
-## Análise de Desempenho
+O arquivo `main.py` foi mantido intencionalmente minimalista, delegando toda a complexidade para a
+classe auxiliar `Program`:
+
+```python
+from src.structures.Program import Program
+
+print("============================")
+print("===== LAS VEGAS CASINO =====")
+print("============================")
+
+app = Program()
+app.init()
+app.loop()
+app.close()
+```
+
+<div style="page-break-after: always;"></div>
+
+## 3. Análise de Desempenho
 
 Com o objetivo de avaliar a eficiência das operações, foram realizadas medições de tempo em cada etapa individual do projeto.
 
-### Primeira Etapa - Geração de Dados
+### 3.1 Primeira Etapa - Geração de Dados
 
 A tabela abaixo apresenta os tempos médios de execução do script `hydration.py`:
 
@@ -68,7 +112,7 @@ A tabela abaixo apresenta os tempos médios de execução do script `hydration.p
 | `clients.txt`        | ~2.04 ms        |
 | `games.txt`          | ~0.44 ms        |
 
-### Segunda Etapa - Carregamento Inicial
+### 3.2 Segunda Etapa - Carregamento Inicial
 
 A tabela seguinte demonstra os tempos médios necessários para o carregamento dos arquivos de texto pelo programa principal durante sua inicialização:
 
@@ -79,11 +123,13 @@ A tabela seguinte demonstra os tempos médios necessários para o carregamento d
 | `clients.txt`        | ~0.21 ms        |
 | `games.txt`          | ~0.14 ms        |
 
-### Terceira Etapa - Operações CRUD
+<div style="page-break-after: always;"></div>
 
-As tabelas a seguir apresentam os tempos de execução das operações CRUD (Create, Read, Update, Delete) para cada entidade do sistema. É importante observar que a operação de listagem possui tempo significativamente maior devido à necessidade de processar e exibir todos os registros existentes, enquanto as demais operações atuam sobre registros individuais.
+### 3.3 Terceira Etapa - Operações CRUD
 
-#### Apostas
+As tabelas a seguir apresentam os tempos de execução das operações de manipulação de dados para cada entidade do sistema.
+
+#### 3.3.1 Apostas
 
 | **Ações**  | **Tempo de Execução** |
 | ---------- | --------------------- |
@@ -93,7 +139,7 @@ As tabelas a seguir apresentam os tempos de execução das operações CRUD (Cre
 | Editar     | 0.07 ms               |
 | Excluir    | 0.32 ms               |
 
-#### Clientes
+#### 3.3.2 Clientes
 
 | **Ações**  | **Tempo de Execução** |
 | ---------- | --------------------- |
@@ -103,9 +149,11 @@ As tabelas a seguir apresentam os tempos de execução das operações CRUD (Cre
 | Editar     | 0.04 ms               |
 | Excluir    | 0.37 ms               |
 
-#### Jogos
+<div style="page-break-after: always;"></div>
 
-A entidade Jogos apresenta os menores tempos de listagem, resultado da quantidade reduzida de jogos disponíveis no cassino comparado às demais entidades.
+#### 3.3.3 Jogos
+
+A entidade jogos apresenta os menores tempos de listagem, resultado da quantidade reduzida de dados comparado às demais entidades.
 
 | **Ações**  | **Tempo de Execução** |
 | ---------- | --------------------- |
@@ -115,7 +163,7 @@ A entidade Jogos apresenta os menores tempos de listagem, resultado da quantidad
 | Editar     | 0.05 ms               |
 | Excluir    | 0.37 ms               |
 
-#### Movimentações
+#### 3.3.4 Movimentações
 
 As movimentações financeiras exibem o maior tempo de listagem dentre todas as entidades, o que é esperado considerando o alto volume de transações registradas.
 
@@ -127,6 +175,6 @@ As movimentações financeiras exibem o maior tempo de listagem dentre todas as 
 | Editar     | 0.04 ms               |
 | Excluir    | 0.51 ms               |
 
-#### Persistência de Dados ao Encerramento
+### 3.4 Persistência de Dados ao Encerramento
 
-Ao finalizar o programa, os dados são persistidos em arquivos de saída localizados no diretório `outputs/`. O tempo médio necessário para a geração completa desses arquivos é de aproximadamente **399.62 ms**, garantindo que todas as alterações realizadas durante a execução do programa sejam preservadas.
+Ao finalizar o programa, os dados são persistidos em arquivos de saída localizados no diretório `output/`. O tempo médio necessário para a geração completa desses arquivos é de aproximadamente **399.62 ms**, garantindo que todas as alterações realizadas durante a execução do programa sejam preservadas.

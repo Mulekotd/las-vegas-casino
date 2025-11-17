@@ -16,8 +16,8 @@ ENTITY_MAP = {
 }
 
 ACTIONS_MAP = {
-    1: "read",
-    2: "visualize",
+    1: "list",
+    2: "read",
     3: "create",
     4: "update",
     5: "delete",
@@ -42,10 +42,10 @@ class Program:
 
         # output paths
         self.output_paths = {
-            "bets": "outputs/bets.txt",
-            "clients": "outputs/clients.txt",
-            "games": "outputs/games.txt",
-            "movimentations": "outputs/movimentations.txt",
+            "bets": "output/bets.txt",
+            "clients": "output/clients.txt",
+            "games": "output/games.txt",
+            "movimentations": "output/movimentations.txt",
         }
 
         # metadata
@@ -163,8 +163,8 @@ class Program:
         entity_list = getattr(self, entity_name)
 
         handler_map = {
-            "read": self.handle_read,
-            "visualize": self.handle_visualize,
+            "list":   self.handle_list,
+            "read":   self.handle_read,
             "create": self.handle_create,
             "update": self.handle_update,
             "delete": self.handle_delete,
@@ -179,8 +179,8 @@ class Program:
 
     # ========== CRUD IMPLEMENTATIONS ==========
 
-    # ------- READ -------
-    def handle_read(self, entity_list: list):
+    # ------- LIST -------
+    def handle_list(self, entity_list: list):
         if not entity_list:
             print("Nenhum registro encontrado.\n")
             return
@@ -192,8 +192,8 @@ class Program:
 
         print(f"\nLeitura feita em: {(time.time() - start) * 1000:.2f} ms\n")
 
-    # ------- VISUALIZE -------
-    def handle_visualize(self, entity_list: list):
+    # ------- READ -------
+    def handle_read(self, entity_list: list):
         pk = int(input("Digite a chave primária: ").strip())
 
         start = time.time()
