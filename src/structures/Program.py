@@ -84,7 +84,7 @@ class Program:
         file = File(filepath)
         entities = []
 
-        for line in file.extract_data():
+        for line in file.get_lines():
             parts = line.split(";")
             entities.append(parser(parts))
 

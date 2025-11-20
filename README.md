@@ -8,92 +8,25 @@ Este documento apresenta o sistema de gerenciamento de cassino desenvolvido como
 
 ### 2.1 Estrutura de Diretórios
 
-A estrutura do projeto foi organizada de forma hierárquica, priorizando a separação clara
-entre código-fonte, dados de entrada e saídas do sistema.
+A arquitetura do projeto adota uma organização hierárquica que prioriza a separação lógica entre os componentes do sistema. Esta estrutura estabelece uma clara distinção entre o código-fonte da aplicação, os conjuntos de dados de entrada e os arquivos de saída gerados durante a execução do programa. Tal abordagem visa promover a manutenibilidade do código e facilitar a compreensão da organização dos artefatos do sistema.
 
-### 2.2 Modelagem das Classes
+### 2.2 Estratégia de Geração de Dados
 
-A modelagem dos agragados foi concebida como uma representação direta da estrutura dos arquivos. Assim, cada classe do sistema corresponde a um arquivo específico, onde suas propriedades mapeiam as colunas do arquivo.
+A fim de otimizar o processo de recuperação de informações, implementou-se uma estratégia de indexação durante a fase de criação dos arquivos de dados. Especificamente, foi incorporada uma coluna identificadora única (id) para cada registro das entidades do programa. Esta decisão proporciona um mecanismo eficiente de busca e referenciamento de entidades, eliminando a necessidade de varreduras sequenciais completas e reduzindo a complexidade algorítmica das operações de leitura de dados.
 
-<div style="page-break-after: always;"></div>
+### 2.3 Modelagem Orientada a Objetos
 
-#### 2.2.1 Classe Bet (Aposta)
-
-Representa uma aposta realizada por um cliente em um jogo específico, mantendo registro completo da transação incluindo valor apostado, resultado obtido e pagamento efetuado.
-
-```python
-- id: int (chave primária)
-- client_id: str (referência ao cliente)
-- game_id: int (referência ao jogo)
-- amount: float (valor apostado)
-- outcome: str (resultado da aposta)
-- payout: float (valor do pagamento)
-- datetime: str (data e hora)
-- odds_breakdown: list (detalhamento das odds)
-```
-
-#### 2.2.2 Classe Client (Cliente)
-
-Encapsula as informações cadastrais e financeiras dos clientes do cassino, incluindo dados pessoais, saldo disponível e nível de privilégio no sistema.
-
-```python
-- id: int (chave primária)
-- first_name: str (primeiro nome)
-- last_name: str (sobrenome)
-- country: str (país de origem)
-- balance: float (saldo disponível)
-- vip_level: int (nível VIP)
-- payment_methods: list (métodos de pagamento)
-```
-
-#### 2.2.3 Classe Game (Jogo)
-
-Define as características operacionais de cada jogo disponível no cassino, estabelecendo parâmetros como limites de apostas, categoria e regras específicas.
-
-```python
-- id: int (chave primária)
-- name: str (nome do jogo)
-- house_edge: float (vantagem da casa)
-- min_bet: float (aposta mínima)
-- max_bet: float (aposta máxima)
-- category: str (categoria do jogo)
-- active: bool (status de ativação)
-- rules: list (regras do jogo)
-```
+Nesta abordagem, cada classe corresponde de forma biunívoca a um arquivo específico, de modo que os atributos das classes espelham fielmente as colunas presentes nos respectivos arquivos. Este paradigma assegura a consistência estrutural entre a camada de persistência e a camada de domínio da aplicação.
 
 <div style="page-break-after: always;"></div>
 
-#### 2.2.4 Classe Movimentation (Movimentação)
+### 2.4 Classe Especializada em Manipulação de Arquivos
 
-Registra todas as transações financeiras realizadas no sistema, proporcionando rastreabilidade completa das operações monetárias entre diferentes entidades.
+Para encapsular as operações de entrada e saída em arquivos de texto, foi desenvolvida uma classe especializada denominada `File`. Esta classe implementa métodos específicos para as operações fundamentais de manipulação de arquivos, incluindo leitura, escrita, adição de conteúdo e extração de dados.
 
-```python
-- transaction_id: int (chave primária)
-- sender: str (remetente)
-- recipient: str (destinatário)
-- amount: float (valor da transação)
-- datetime: str (data e hora)
-- transaction_type: str (tipo de transação)
-- tags: list (etiquetas)
-```
+### 2.5 Arquitetura do Módulo Principal
 
-### 2.3 Simplicidade do script principal
-
-O arquivo `main.py` foi mantido intencionalmente minimalista, delegando toda a complexidade para a
-classe auxiliar `Program`:
-
-```python
-from src.structures.Program import Program
-
-print("============================")
-print("===== LAS VEGAS CASINO =====")
-print("============================")
-
-app = Program()
-app.init()
-app.loop()
-app.close()
-```
+O módulo `main.py` foi estruturado seguindo o princípio da responsabilidade única. A implementação adota uma abordagem minimalista, na qual a complexidade lógica e operacional é integralmente delegada à classe auxiliar `Program`. Esta decisão arquitetural promove a clareza do ponto de entrada da aplicação, concentrando as responsabilidades de coordenação do sistema em componentes especializados.
 
 <div style="page-break-after: always;"></div>
 
@@ -177,4 +110,4 @@ As movimentações financeiras exibem o maior tempo de listagem dentre todas as 
 
 ### 3.4 Persistência de Dados ao Encerramento
 
-Ao finalizar o programa, os dados são persistidos em arquivos de saída localizados no diretório `output/`. O tempo médio necessário para a geração completa desses arquivos é de aproximadamente **399.62 ms**, garantindo que todas as alterações realizadas durante a execução do programa sejam preservadas.
+Ao finalizar o programa, os dados são persistidos em arquivos de saída localizados no diretório `output/`. O tempo médio necessário para a geração completa desses arquivos é de aproximadamente **399.62 ms**, garantindo que todas as alterações realizadas durante a execução sejam preservadas.
