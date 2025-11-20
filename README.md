@@ -41,20 +41,20 @@ A tabela abaixo apresenta os tempos de execução do script `hydration.py`:
 | **Arquivo**          | **Tempo de Execução** |
 | -------------------- | --------------------- |
 | `movimentations.txt` | 325.86 ms             |
-| `bets.txt`           | 62.88 ms              |
+| `bets.txt`           | 66.25 ms              |
 | `clients.txt`        | 6.98 ms               |
 | `games.txt`          | 0.90 ms               |
 
 ### 3.2 Segunda Etapa - Carregamento Inicial
 
-A tabela seguinte demonstra os tempos médios necessários para o carregamento dos arquivos de texto pelo programa principal durante sua inicialização:
+A tabela seguinte demonstra os tempos necessários para o carregamento dos arquivos de texto pelo programa principal durante sua inicialização:
 
-| **Arquivo**          | **Tempo Médio** |
-| -------------------- | --------------- |
-| `movimentations.txt` | ~0.27 ms        |
-| `bets.txt`           | ~0.26 ms        |
-| `clients.txt`        | ~0.21 ms        |
-| `games.txt`          | ~0.14 ms        |
+| **Arquivo**          | **Tempo de Execução** |
+| -------------------- | --------------------- |
+| `movimentations.txt` | 32.31 ms              |
+| `bets.txt`           | 46.09 ms              |
+| `clients.txt`        | 30.44 ms              |
+| `games.txt`          | 23.11 ms              |
 
 <div style="page-break-after: always;"></div>
 
@@ -66,8 +66,8 @@ As tabelas a seguir apresentam os tempos de execução das operações de manipu
 
 | **Ações**  | **Tempo de Execução** |
 | ---------- | --------------------- |
-| Listar     | 147.58 ms             |
-| Visualizar | 1.34 ms               |
+| Listar     | 881.86 ms             |
+| Visualizar | 0.51 ms               |
 | Adicionar  | 0.08 ms               |
 | Editar     | 0.07 ms               |
 | Excluir    | 0.32 ms               |
@@ -76,8 +76,8 @@ As tabelas a seguir apresentam os tempos de execução das operações de manipu
 
 | **Ações**  | **Tempo de Execução** |
 | ---------- | --------------------- |
-| Listar     | 67.73 ms              |
-| Visualizar | 1.41 ms               |
+| Listar     | 120.99 ms             |
+| Visualizar | 0.48 ms               |
 | Adicionar  | 0.06 ms               |
 | Editar     | 0.04 ms               |
 | Excluir    | 0.37 ms               |
@@ -90,8 +90,8 @@ A entidade jogos apresenta os menores tempos de listagem, resultado da quantidad
 
 | **Ações**  | **Tempo de Execução** |
 | ---------- | --------------------- |
-| Listar     | 6.74 ms               |
-| Visualizar | 1.30 ms               |
+| Listar     | 2.61 ms               |
+| Visualizar | 0.54 ms               |
 | Adicionar  | 0.05 ms               |
 | Editar     | 0.05 ms               |
 | Excluir    | 0.37 ms               |
@@ -102,12 +102,12 @@ As movimentações financeiras exibem o maior tempo de listagem dentre todas as 
 
 | **Ações**  | **Tempo de Execução** |
 | ---------- | --------------------- |
-| Listar     | 295.84 ms             |
-| Visualizar | 1.43 ms               |
+| Listar     | 4018.12 ms            |
+| Visualizar | 0.55 ms               |
 | Adicionar  | 0.05 ms               |
 | Editar     | 0.04 ms               |
 | Excluir    | 0.51 ms               |
 
 ### 3.4 Persistência de Dados ao Encerramento
 
-Ao finalizar o programa, os dados são persistidos em arquivos de saída localizados no diretório `output/`. O tempo médio necessário para a geração completa desses arquivos é de aproximadamente **399.62 ms**, garantindo que todas as alterações realizadas durante a execução sejam preservadas.
+Ao finalizar o programa, os dados são persistidos em arquivos de saída localizados no diretório `output/`. O tempo médio necessário para a geração completa desses arquivos é de aproximadamente **6934.90 ms**, garantindo que todas as alterações realizadas durante a execução sejam preservadas.
