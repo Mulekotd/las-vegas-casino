@@ -5,7 +5,7 @@ class File:
     def __init__(self, path: str):
         self.path = path
 
-    def extract_data(self) -> list[str]:
+    def get_lines(self) -> list[str]:
         time, lines = calculate_execution_time(self.read)
 
         print(f"Arquivo: {self.path}")

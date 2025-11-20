@@ -39,11 +39,11 @@ Com o objetivo de avaliar a eficiência das operações, foram realizadas mediç
 A tabela abaixo apresenta os tempos de execução do script `hydration.py`:
 
 | **Arquivo**          | **Tempo de Execução** |
-| -------------------- | --------------- |
-| `movimentations.txt` | 325.86 ms       |
-| `bets.txt`           | 62.88 ms        |
-| `clients.txt`        | 6.98 ms         |
-| `games.txt`          | 0.90 ms         |
+| -------------------- | --------------------- |
+| `movimentations.txt` | 325.86 ms             |
+| `bets.txt`           | 62.88 ms              |
+| `clients.txt`        | 6.98 ms               |
+| `games.txt`          | 0.90 ms               |
 
 ### 3.2 Segunda Etapa - Carregamento Inicial
 
