@@ -25,7 +25,6 @@ ACTIONS_MAP = {
 options = list(ENTITY_MAP.keys()) + ["Sair"]
 sub_options = ["Listar", "Visualizar", "Adicionar", "Editar", "Excluir", "Voltar"]
 
-
 class Program:
     def __init__(self):
         # collections

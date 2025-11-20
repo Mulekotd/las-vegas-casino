@@ -4,9 +4,9 @@ from pathlib import Path
 from src.utils import calculate_execution_time
 
 # sizes
-MOV_LINES = 1000
-BET_LINES = 500
-CLIENT_LINES = 250
+MOV_LINES = 25_000
+BET_LINES = 5_000
+CLIENT_LINES = 500
 
 # fixed games
 GAMES_LIST = [
@@ -29,7 +29,7 @@ games_path = root / "games.txt"
 
 def generate_movimentations():
     with open(mov_path, "w", encoding="utf-8") as f:
-        for i in range(MOV_LINES):
+        for i in range(1, MOV_LINES + 1):
             sender = random.choice(["casino", f"{random.randint(1,250)}"])
             recipient = random.choice(["casino", f"{random.randint(1,250)}"])
             amount = round(random.uniform(5,5000),2)
@@ -40,7 +40,7 @@ def generate_movimentations():
 
 def generate_bets():
     with open(bet_path,"w",encoding="utf-8") as f:
-        for i in range(BET_LINES):
+        for i in range(1, BET_LINES + 1):
             uuid = f"{random.randint(1,250)}"
             game_id = random.randint(1,len(GAMES_LIST))
             amount = round(random.uniform(1,500),2)
@@ -53,8 +53,9 @@ def generate_bets():
 def generate_clients():
     names = ["Ana","Pedro","João","Thiago","Lara","Beatriz","Yuri","Carlos","Daniel","Arthur"]
     ln = ["Silva","Pereira","Lima","Castro","Moraes","Alcantara"]
+    
     with open(client_path,"w",encoding="utf-8") as f:
-        for i in range(CLIENT_LINES):
+        for i in range(1, CLIENT_LINES + 1):
             fn = random.choice(names)
             ln2 = random.choice(ln)
             country = random.choice(["BR","US","JP","AR","CL"])
@@ -78,9 +79,9 @@ tb,_ = calculate_execution_time(generate_bets)
 tc,_ = calculate_execution_time(generate_clients)
 tg,_ = calculate_execution_time(generate_games)
 
-print("| File               | Time   |")
-print("| ------------------ | ------ |")
+print("| File               | Time     |")
+print("| ------------------ | -------- |")
 print(f"| movimentations.txt | {tm:.2f}ms |")
-print(f"| bets.txt           | {tb:.2f}ms |")
-print(f"| clients.txt        | {tc:.2f}ms |")
-print(f"| games.txt          | {tg:.2f}ms |")
+print(f"| bets.txt           | {tb:.2f}ms  |")
+print(f"| clients.txt        | {tc:.2f}ms   |")
+print(f"| games.txt          | {tg:.2f}ms   |")

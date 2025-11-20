@@ -36,14 +36,14 @@ Com o objetivo de avaliar a eficiência das operações, foram realizadas mediç
 
 ### 3.1 Primeira Etapa - Geração de Dados
 
-A tabela abaixo apresenta os tempos médios de execução do script `hydration.py`:
+A tabela abaixo apresenta os tempos de execução do script `hydration.py`:
 
-| **Arquivo**          | **Tempo Médio** |
+| **Arquivo**          | **Tempo de Execução** |
 | -------------------- | --------------- |
-| `movimentations.txt` | ~7.51 ms        |
-| `bets.txt`           | ~4.83 ms        |
-| `clients.txt`        | ~2.04 ms        |
-| `games.txt`          | ~0.44 ms        |
+| `movimentations.txt` | 325.86 ms       |
+| `bets.txt`           | 62.88 ms        |
+| `clients.txt`        | 6.98 ms         |
+| `games.txt`          | 0.90 ms         |
 
 ### 3.2 Segunda Etapa - Carregamento Inicial
 
