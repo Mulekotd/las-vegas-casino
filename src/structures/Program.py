@@ -26,7 +26,6 @@ ACTIONS_MAP = {
 options = list(ENTITY_MAP.keys()) + ["Sair"]
 sub_options = ["Listar", "Visualizar", "Adicionar", "Editar", "Excluir", "Voltar"]
 
-
 class Program:
     def __init__(self):
         # collections
@@ -85,7 +84,7 @@ class Program:
         file = File(filepath)
         entities = []
 
-        for line in file.extract_data():
+        for line in file.get_lines():
             parts = line.split(";")
             entities.append(parser(parts))
 
