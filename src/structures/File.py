@@ -3,8 +3,12 @@ import os
 class File:
     def __init__(self, path: str):
         self.path = path
+        os.makedirs(os.path.dirname(path), exist_ok=True)
 
     def get_lines(self) -> list[str]:
+        if not os.path.exists(self.path):
+            return []
+        
         lines = self.read()
 
         if not lines:
@@ -13,11 +17,6 @@ class File:
         return [line.strip() for line in lines if line.strip()]
     
     def write(self, content: str) -> None:
-        directory = os.path.dirname(self.path)
-        
-        if directory:
-            os.makedirs(directory, exist_ok=True)
-        
         with open(self.path, "w", encoding="utf-8") as f:
             f.write(content)
 
@@ -26,10 +25,5 @@ class File:
             return f.readlines()
 
     def append(self, new_line: str) -> None:
-        directory = os.path.dirname(self.path)
-
-        if directory:
-            os.makedirs(directory, exist_ok=True)
-        
         with open(self.path, "a", encoding="utf-8") as f:
             f.write(new_line + "\n")
