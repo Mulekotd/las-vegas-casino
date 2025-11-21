@@ -110,4 +110,4 @@ As movimentações financeiras exibem o maior tempo de listagem dentre todas as 
 
 ### 3.4 Persistência de Dados ao Encerramento
 
-Ao finalizar o programa, os dados são persistidos em arquivos de saída localizados no diretório `output/`. O tempo médio necessário para a geração completa desses arquivos é de aproximadamente **6934.90 ms**, garantindo que todas as alterações realizadas durante a execução sejam preservadas.
+Ao finalizar o programa, os dados são persistidos em arquivos de saída localizados no diretório `output/`. O tempo médio necessário para a geração completa desses arquivos é de aproximadamente **58.48 ms**, garantindo que todas as alterações realizadas durante a execução sejam preservadas.
