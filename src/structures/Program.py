@@ -1,3 +1,4 @@
+from typing import Callable
 from src.utils import get_breakline
 
 from .File import File
@@ -51,26 +52,22 @@ class Program:
             "bets": {
                 "file": "database/bets.txt",
                 "cls": Bet,
-                "parser": lambda b: Bet(*b),
-                "title": "BETS",
+                "parser": lambda b: Bet(*b)
             },
             "clients": {
                 "file": "database/clients.txt",
                 "cls": Client,
-                "parser": lambda c: Client(*c),
-                "title": "CLIENTS",
+                "parser": lambda c: Client(*c)
             },
             "games": {
                 "file": "database/games.txt",
                 "cls": Game,
-                "parser": lambda g: Game(*g),
-                "title": "GAMES",
+                "parser": lambda g: Game(*g)
             },
             "movimentations": {
                 "file": "database/movimentations.txt",
                 "cls": Movimentation,
-                "parser": lambda m: Movimentation(*m),
-                "title": "MOVIMENTATIONS",
+                "parser": lambda m: Movimentation(*m)
             }
         }
 
@@ -79,7 +76,7 @@ class Program:
         for key, config in self.entity_configs.items():
             setattr(self, key, self.load_entities(config["file"], config["parser"]))
 
-    def load_entities(self, filepath: str, parser):
+    def load_entities(self, filepath: str, parser: Callable):
         file = File(filepath)
         entities = []
 
@@ -91,14 +88,11 @@ class Program:
 
     def close(self):
         for entity_name, output_path in self.output_paths.items():
-            entity_list = getattr(self, entity_name)
-            title = self.entity_configs[entity_name]["title"]
-            
-            output_file = File(output_path)
-            output_file.write(f"--- {title} CONTENT ---\n\n")
-            
-            for e in entity_list:
-                output_file.append(e.write_content())
+            entity_list: list[Bet | Client | Game | Movimentation] = getattr(self, entity_name)
+
+            with open(output_path, "w", encoding="utf-8") as f:
+                    for e in entity_list:
+                        f.write(e.write_content() + "\n")
 
     # ========== UI UTILITIES ==========
     def display_menu(self, items: list[str]):
@@ -178,7 +172,7 @@ class Program:
     # ========== CRUD IMPLEMENTATIONS ==========
 
     # ------- LIST -------
-    def handle_list(self, entity_list: list):
+    def handle_list(self, entity_list: list[Bet | Client | Game | Movimentation]):
         if not entity_list:
             print("Nenhum registro encontrado.\n")
             return
@@ -193,7 +187,7 @@ class Program:
                 break
 
     # ------- READ -------
-    def handle_read(self, entity_list: list):
+    def handle_read(self, entity_list: list[Bet | Client | Game | Movimentation]):
         pk = int(input("Digite a chave primária: ").strip())
 
         found = next((e for e in entity_list if e.get_id() == pk), None)
@@ -205,7 +199,7 @@ class Program:
             print(found.write_content())
 
     # ------- CREATE -------
-    def handle_create(self, entity_list: list):
+    def handle_create(self, entity_list: list[Bet | Client | Game | Movimentation]):
         user_input = input("Digite os campos separados por espaço: ").split()
 
         entity_name = ENTITY_MAP[self.selected_type]
@@ -214,7 +208,7 @@ class Program:
         entity_list.append(cls(*user_input))
 
     # ------- UPDATE -------
-    def handle_update(self, entity_list: list):
+    def handle_update(self, entity_list: list[Bet | Client | Game | Movimentation]):
         pk = int(input("Digite a chave primária: ").strip())
         found = next((e for e in entity_list if e.get_id() == pk), None)
 
@@ -225,7 +219,7 @@ class Program:
             found.update(*user_input)
 
     # ------- DELETE -------
-    def handle_delete(self, entity_list: list):
+    def handle_delete(self, entity_list: list[Bet | Client | Game | Movimentation]):
         pk = int(input("Digite a chave primária: ").strip())
         found = next((e for e in entity_list if e.get_id() == pk), None)
 
