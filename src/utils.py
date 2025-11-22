@@ -1,6 +1,7 @@
 from typing import Any, Callable
 import time
 
+
 def calculate_execution_time(callback_fn: Callable) -> tuple[float, Any]:
     start_time: float = time.time()
     result: Any = callback_fn()

@@ -7,6 +7,7 @@ from .Client import Client
 from .Game import Game
 from .Movimentation import Movimentation
 
+
 # === CONSTANTS ===
 ENTITY_MAP = {
     "Apostas": "bets",
@@ -25,6 +26,7 @@ ACTIONS_MAP = {
 
 options = list(ENTITY_MAP.keys()) + ["Sair"]
 sub_options = ["Listar", "Visualizar", "Adicionar", "Editar", "Excluir", "Voltar"]
+
 
 class Program:
     def __init__(self):
@@ -190,7 +192,7 @@ class Program:
     def handle_read(self, entity_list: list[Bet | Client | Game | Movimentation]):
         pk = int(input("Digite a chave primária: ").strip())
 
-        found = next((e for e in entity_list if e.get_id() == pk), None)
+        found = next((e for e in entity_list if e.get_uid() == pk), None)
         print()
 
         if not found:
@@ -201,16 +203,17 @@ class Program:
     # ------- CREATE -------
     def handle_create(self, entity_list: list[Bet | Client | Game | Movimentation]):
         user_input = input("Digite os campos separados por espaço: ").split()
+        next_uid = entity_list[-1].get_uid() + 1
 
         entity_name = ENTITY_MAP[self.selected_type]
         cls = self.entity_configs[entity_name]["cls"]
 
-        entity_list.append(cls(*user_input))
+        entity_list.append(cls(next_uid, *user_input))
 
     # ------- UPDATE -------
     def handle_update(self, entity_list: list[Bet | Client | Game | Movimentation]):
         pk = int(input("Digite a chave primária: ").strip())
-        found = next((e for e in entity_list if e.get_id() == pk), None)
+        found = next((e for e in entity_list if e.get_uid() == pk), None)
 
         if not found:
             print("Nenhum registro encontrado.\n")
@@ -221,7 +224,7 @@ class Program:
     # ------- DELETE -------
     def handle_delete(self, entity_list: list[Bet | Client | Game | Movimentation]):
         pk = int(input("Digite a chave primária: ").strip())
-        found = next((e for e in entity_list if e.get_id() == pk), None)
+        found = next((e for e in entity_list if e.get_uid() == pk), None)
 
         if not found:
             print("Nenhum registro encontrado.\n")

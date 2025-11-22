@@ -1,7 +1,9 @@
-import random
-import json
 from pathlib import Path
 from src.utils import calculate_execution_time
+
+import random
+import json
+
 
 # sizes
 MOV_LINES = 25_000
@@ -26,6 +28,7 @@ mov_path = root / "movimentations.txt"
 bet_path = root / "bets.txt"
 client_path = root / "clients.txt"
 games_path = root / "games.txt"
+
 
 def generate_movimentations():
     with open(mov_path, "w", encoding="utf-8") as f:

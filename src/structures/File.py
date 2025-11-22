@@ -1,8 +1,9 @@
 import os
 
+
 class File:
     def __init__(self, path: str):
-        self.path = path
+        self.path: str = path
         os.makedirs(os.path.dirname(path), exist_ok=True)
 
     def get_lines(self) -> list[str]:
